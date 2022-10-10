@@ -1,0 +1,95 @@
+#import CardTransition kivy.uix.screenmanager.CardTransition
+#import FadeTransition kivy.uix.screenmanager.FadeTransition
+<WindoManager>:
+#transition: CardTransition()
+    Menu:
+        id: menu
+        name: 'menu'
+    Question:
+        id: list_questions
+        name: 'list_questions'
+    Detail:
+        id: detail
+        name: 'detail'
+
+<Detail>
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDToolbar:
+            id: title
+            left_action_items:[['arrow-left', lambda x: root.go_back()]]
+        
+        MDBoxLayout:
+            padding: (dp(10),dp(10), dp(10), dp(5))
+            ScrollView:
+                MDLabel:
+                    id: body
+                    size_hint: 1, None
+                    size: self.texture_size
+                    markup: True
+                    halign: 'left'
+
+<ListItem>
+    font_style: 'Subtitle2'
+
+<MD3Card>
+    padding: 4
+    size_hint: None, None
+    size: "150dp", "70dp"
+    md_bg_color: rgba('#9e9e9e')
+    on_release: root.get_questions()
+
+    MDRelativeLayout:
+
+        FitImage:
+            source: root.image
+            size_hint: None, None
+            size: "50dp", "50dp"
+            pos_hint: {'center_x': .5, 'center_y': .5}
+<Question>
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDToolbar:
+            pos_hint: {'top': 1}
+            left_action_items:[['arrow-left', lambda x: root.callback()]]
+
+        ScrollView:
+            MDList:
+                id: box
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: '70dp'
+            orientation: 'horizontal'
+            md_bg_color: rgba('#ffffff')
+            MDFlatButton:
+                text: 'prev'
+#pos_hint: {'center_x': .8}
+                on_release: root.prev()
+            MDFlatButton:
+                text: str(root.page_id)
+                halign: 'center'
+
+            MDFlatButton:
+                text: 'next'
+                on_release: root.next()
+
+
+
+<Menu>
+    MDToolbar:
+        title: '[i]Interview +[/i]'
+        pos_hint: {'top': 1}
+#        haligh: 'center'
+    MDGridLayout:
+        cols: 2
+        adaptive_size: True
+        id: box
+        spacing: '16sp'
+        pos_hint: {'center_x': .5, 'center_y': .5}
+
+    MDFlatButton:
+        id: lang
+        on_release: root.switch_lang(self.text)
+#text: 'En'            
+#icon: 'i/russia.png'
