@@ -12,10 +12,16 @@ class QuestionEnSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('en_lang', 'en_answer')
+        fields = ('id', 'en_lang',)
 
 class QuestionRuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('ru_lang', 'ru_answer')
+        fields = ('id', 'ru_lang',)
+
+class QuestionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Question
+        fields = '__all__'

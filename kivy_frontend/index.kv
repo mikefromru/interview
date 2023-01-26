@@ -1,7 +1,4 @@
-#import CardTransition kivy.uix.screenmanager.CardTransition
-#import FadeTransition kivy.uix.screenmanager.FadeTransition
 <WindoManager>:
-#transition: CardTransition()
     Menu:
         id: menu
         name: 'menu'
@@ -11,32 +8,46 @@
     Detail:
         id: detail
         name: 'detail'
+    NotConnection:
+        id: notconnection
+        name: 'notconnection'
+
+<NotConnection>
+    MDLabel:
+        text: 'Non connection'
+        halign: 'center'
 
 <Detail>
     MDBoxLayout:
         orientation: 'vertical'
         MDToolbar:
             id: title
+            title: root.title
             left_action_items:[['arrow-left', lambda x: root.go_back()]]
         
         MDBoxLayout:
             padding: (dp(10),dp(10), dp(10), dp(5))
             ScrollView:
+                effect_cls: 'ScrollEffect'
+                do_scroll_x: False
+                do_scroll_y: True
                 MDLabel:
-                    id: body
+#id: body
+                    text: root.body
                     size_hint: 1, None
                     size: self.texture_size
                     markup: True
                     halign: 'left'
 
 <ListItem>
+#font_name: 'fonts/roboto-mono/logo_font.ttf'
     font_style: 'Subtitle2'
 
 <MD3Card>
     padding: 4
     size_hint: None, None
     size: "150dp", "70dp"
-    md_bg_color: rgba('#9e9e9e')
+    md_bg_color: app.theme_cls.primary_light
     on_release: root.get_questions()
 
     MDRelativeLayout:
@@ -50,46 +61,50 @@
     MDBoxLayout:
         orientation: 'vertical'
         MDToolbar:
+            id: mytitle
             pos_hint: {'top': 1}
             left_action_items:[['arrow-left', lambda x: root.callback()]]
 
         ScrollView:
+            effect_cls: 'ScrollEffect'
+            do_scroll_x: False
+            do_scroll_y: True
+
+            id: myscroll
             MDList:
                 id: box
 
-        MDBoxLayout:
+        MDFloatLayout:
             size_hint_y: None
-            height: '70dp'
+            height: '50dp'
             orientation: 'horizontal'
             md_bg_color: rgba('#ffffff')
-            MDFlatButton:
-                text: 'prev'
-#pos_hint: {'center_x': .8}
+            MDIconButton:
+                icon: 'chevron-left'
                 on_release: root.prev()
-            MDFlatButton:
-                text: str(root.page_id)
+                pos_hint: {'center_x': .3, 'center_y': .5}
+                user_font_size: '28sp'
+            MDLabel:
+                text: str(root.page_id) + '/' + str(root.total)
+                bold: True
                 halign: 'center'
+                pos_hint: {'center_x': .5}
 
-            MDFlatButton:
-                text: 'next'
+            MDIconButton:
+                icon: 'chevron-right'
                 on_release: root.next()
-
-
-
+                user_font_size: '31sp'
+                pos_hint: {'center_x': .7, 'center_y': .5}
 <Menu>
     MDToolbar:
         title: '[i]Interview +[/i]'
         pos_hint: {'top': 1}
-#        haligh: 'center'
     MDGridLayout:
         cols: 2
         adaptive_size: True
         id: box
         spacing: '16sp'
         pos_hint: {'center_x': .5, 'center_y': .5}
-
     MDFlatButton:
         id: lang
         on_release: root.switch_lang(self.text)
-#text: 'En'            
-#icon: 'i/russia.png'

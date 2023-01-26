@@ -7,7 +7,9 @@ from .. views import api_views
 
 api_urlpatterns = [
     path('subjects/', api_views.SubjectView.as_view()),
-    path('subject/<pk>/', api_views.SubjectQuestionDetail.as_view()),
+    path('subject/<pk>/', api_views.SubjectQuestionList.as_view()),
+    path('subject/question/detail/<pk>/', api_views.SubjectQuestionDetail.as_view()),
+    # path('subject/<pk>/', api_views.SubjectQuestionDetail.as_view()),
 ]
 
 # api_urlpatterns += router.urls

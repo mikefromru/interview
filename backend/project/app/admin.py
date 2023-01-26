@@ -7,4 +7,5 @@ class SubjectAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    pass
+
+    search_fields = ('en_lang', 'ru_lang')
