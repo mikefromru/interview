@@ -1,5 +1,4 @@
-import json, os, shutil
-import tools.fontcolor as fontcolor
+import json, os
 from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivy.lang import Builder
