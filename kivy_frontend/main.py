@@ -1,9 +1,13 @@
+import json, os, shutil
+import tools.fontcolor as fontcolor
 from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, CardTransition, FadeTransition
 from kivymd.uix.card import MDCard
+from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.list import OneLineListItem
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.uix.image import AsyncImage
 from kivy.properties import StringProperty, ObjectProperty, NumericProperty
 from kivy.clock import Clock
@@ -12,159 +16,33 @@ from pathlib import Path
 from kivy.core.window import Window
 from kivy.config import Config
 import time
-
+#from kivy.uix.behaviors import ButtonBehavior 
 from kivy.uix.screenmanager import(
     CardTransition
 )
-
+from kivy.network.urlrequest import UrlRequest
 from kivy.utils import platform
+from threading import Thread
+
+from screens.questions.questions import Question
+
+import os
+from local_settings import *
+print(os.system('pip show kivymd'))
 
 if platform == 'android':
-    domain = 'http://iammike.pythonanywhere.com/'
-    url = 'http://iammike.pythonanywhere.com/api'
-else:
-    domain = 'http://localhost:8000'
-    url = 'http://localhost:8000/api'
+    domain = prod_domain 
+    url = prod_url
 
+else:
+    domain = dev_domain 
+    url = dev_url
     Window.size = (350, 700)
     Window.top = 80
     Window.right = 80
 
-class WindoManager(ScreenManager):
-    pass
-
-class Detail(Screen):
-
-    params = ObjectProperty()
-    title = StringProperty()
-    body = StringProperty()
-
-    def on_enter(self):
-        lang = self.params.get('lang') 
-        answer = self.params.get('answer')
-
-        r = requests.get(url + f'/app/subject/question/detail/{self.data.get("id")}/')
-        data = r.json()
-
-        self.title = data.get(lang)
-        self.body = data.get(answer)
-
-        self.ids.title.ids.label_title.font_size = '15sp'
-
-    def go_back(self):
-        self.title, self.body = '', ''
-        self.manager.current = 'list_questions'
-        App.get_running_app().window_manager.transition.direction = 'right'
-
-class ListItem(OneLineListItem):
-
-    id = NumericProperty()
-    text = StringProperty()
-    body = StringProperty()
-    params = ObjectProperty()
-
-    def on_release(self):
-        Detail.data = {'id': self.id, 'title': self.text, 'body': self.body}
-        print(self.id)
-        App.get_running_app().window_manager.current = 'detail'
-
-class Question(Screen):
-    
-    title = StringProperty()
-    params = ObjectProperty()
-    id = NumericProperty()
-    total = NumericProperty(0)
-    page_id = NumericProperty(1)
-    count = NumericProperty()
-    next_ = True
-    load = True
-
-    def __init_(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def checking_load(self, i):
-        self.get_questions()
-        if self.load:
-            print('loading ...')
-        else:
-            self.event_load.cancel()
-            self.remove_widget(self.loading)
-            print('done')
-
-    def on_enter(self, *args):
-        self.ids.mytitle.title = self.title.capitalize()
-        self.event_load = Clock.schedule_interval(self.checking_load, 0.1)
-        self.loading = MDLabel(text='Loading ...', halign='center')
-        self.add_widget(self.loading)
-        Detail.params = self.params
-
-    def on_leave(self, *args):
-        self.event_load.cancel()
-        self.remove_widget(self.loading)
-        self.title = ''
-
-    def get_questions(self):
-        r = requests.get(url + f'/app/subject/{self.id}/?page={self.page_id}', params=self.params)
-        data_json = r.json()
-        self.total = round(data_json.get('count')) // 20 + 1
-        if self.next_ == True:
-            self.create_card(data_json)
-
-        if data_json['next'] == None:
-                self.next_ = False
-
-    def create_card(self, data):
-        j = self.page_id * 20 - 20 + 1
-        for x in data.get('results'):
-            print(x.get('id'))
-            self.ids.box.add_widget(
-                ListItem(id=x.get('id'), text=str(j) + '. ' +  str(x.get(self.params['lang'])))
-            )
-            j += 1
-        self.load = False
-
-    def go_go_next(self, i):
-        if self.next_ == True:
-            self.page_id += 1
-            self.get_questions()
-        self.remove_widget(self.loading)
-    
-    def go_go_prev(self, i):
-        if self.page_id > 1:
-            self.page_id -= 1
-            self.get_questions()
-            self.remove_widget(self.loading)
-
-    def next(self):
-        self.ids.myscroll.scroll_y = 1
-        if self.next_ == True:
-            self.loading = MDLabel(text='Loading ...', halign='center')
-            self.add_widget(self.loading)
-
-            self.ids.box.clear_widgets() 
-        Clock.schedule_once(self.go_go_next, 0.1)
-        
-    def prev(self):
-        self.ids.myscroll.scroll_y = 1
-        self.next_ = True
-        if self.page_id > 1:
-            self.loading = MDLabel(text='Loading ...', halign='center')
-            self.add_widget(self.loading)
-            self.ids.box.clear_widgets() 
-        Clock.schedule_once(self.go_go_prev, 0.1)
-
-    def on_leave(self):
-        self.ids.box.clear_widgets()
-        self.next_ = True
-
-    def callback(self):
-        self.page_id = 1
-        self.manager.current = 'menu'
-        App.get_running_app().window_manager.transition.direction = 'right'
-        self.event_load.cancel()
-        self.remove_widget(self.loading)
-
 class MD3Card(MDCard):
+
     id = NumericProperty()
     text = StringProperty()
     image = StringProperty()
@@ -173,74 +51,141 @@ class MD3Card(MDCard):
         Question.title = self.text
         print(self.text)
         Question.id = self.id
-        App.get_running_app().window_manager.current = 'list_questions'
-        App.get_running_app().window_manager.transition.direction = 'left'
+        MDApp.get_running_app().sm.current = 'questions'
+        MDApp.get_running_app().sm.transition.direction = 'left'
+
+        #if not sm.has_screen(name='list_questions'):
 
 class Menu(Screen):
-
+    
+    result = ObjectProperty()
+    kak = StringProperty()
     subjects = ObjectProperty()
+    fuck = ObjectProperty()
+    load_pics = False
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        Clock.schedule_once(self.create_card, 0.2)
+        print('Menu ___init__')
+
+        if os.path.exists('storage/data.json'):
+            print('<<< onep data_json file >>>>')
+
+            with open('storage/data.json') as f:
+                self.result = json.load(f)
+                for x in self.result:
+                    card = MD3Card(
+                        #id=x.get('id'), text=x.get('name'), image=domain + x.get('image')
+                        id=x.get('id'), text=x.get('name'), image=x.get('image')
+                    )
+                    self.ids.box.add_widget(card)
+        else:
+            print('<<< UrlRequest is working >>>>')
+            self.loading = MDLabel(text='loading', halign='center')
+            self.add_widget(self.loading)
+
+            self.req = UrlRequest(url + '/app/subjects/',
+                on_success=self.success,
+                on_failure=self.fail, 
+                on_error=self.error,
+                on_progress=self.progress,
+            )
+
         self.config = App.get_running_app().config
         self.lang = self.config.get('Settings', 'lang')
         self.answer = self.config.get('Settings', 'answer')
         Question.params = {'lang': self.lang, 'answer': self.answer}
 
+    def success(self, req, result):
+        self.result = result
+        for x in self.result:
+            card = MD3Card(
+                id=x.get('id'), text=x.get('name'), image=domain + x.get('image')
+            )
+            self.ids.box.add_widget(card)
+        self.remove_widget(self.loading)
+        
+        if not os.path.exists('storage'):
+            os.mkdir('storage')
+
+        th = Thread(target=self.get_pictures).start()
+
+    def fail(self, req, result):
+        self.add_widget(MDLabel(text='fail', halign='center'))
+        print('fail')
+
+    def error(self, req, result):
+        self.add_widget(MDLabel(text='error', halign='center'))
+        print('error')
+
+    def progress(self, *args, **kwargs):
+        print('loading....')
+    
+    def get_pictures(self):
+        if not os.path.exists('i/levels'):
+            os.mkdir('i/levels')
+
+        for x in self.result:
+            url_ = domain + x.get('image')
+            name = os.path.basename(url_).split('/')[-1]
+            print('You got --->', name.capitalize())
+            r = requests.get(url_, stream=True)
+            f = open('i/levels/' + name, 'wb')
+            f.write(r.content)
+
+        for x in self.result:
+                name = os.path.basename(x['image']).split('/')[-1]
+                x['image'] = 'i/levels/' + name
+        with open('storage/data.json', 'w') as f:
+            json.dump(self.result, f)
+
+    def on_enter(self, *args):
+        print('self.lang >> ', self.lang)
+        self.ids.lang.text = self.lang[:2].capitalize()
+
+        # Create  list_questions screen if it doesn't exists
+        if not MDApp.get_running_app().sm.has_screen(name='questions'):
+            print('creating Question screen ...')
+            Builder.load_file('screens/questions/questions.kv')
+            MDApp.get_running_app().sm.add_widget(Question(name='questions'))
+
     def switch_lang(self, instance):
+        print(instance == 'En')
         if instance == 'En':
+            self.lang = 'ru_lang'
             self.ids.lang.text = 'Ru'
             self.config.set('Settings', 'lang', 'ru_lang')
             self.config.set('Settings', 'answer', 'ru_answer')
             Question.params = {'lang': 'ru_lang', 'answer': 'ru_answer'}
         else:
             self.ids.lang.text = 'En'
+            self.lang = 'en_lang'
             self.config.set('Settings', 'lang', 'en_lang')
             self.config.set('Settings', 'answer', 'en_answer')
             Question.params = {'lang': 'en_lang', 'answer': 'en_answer'}
         self.config.write()
 
-    def create_card(self, i):
-        self.ids.lang.text = self.lang[:2].capitalize()
-        for x in self.subjects:
-            card = MD3Card(
-                id=x.get('id'), text=x.get('name'), image=domain + x.get('image')
-            )
-            self.ids.box.add_widget(card)
 
-class NotConnection(Screen):
-    pass
+#sm = ScreenManager()
 
 class App(MDApp):
 
     def build(self):
-        import platform
-        print(f'{platform.python_version()=}')
+        self.theme_cls.theme_style = "Light"
+        self.theme_cls.primary_palette = 'BlueGray'  #"Gray"
+        self.theme_cls.primary_hue = "300"
+        #self.window_manager = WindoManager(transition=FadeTransition(duration=1))
 
-        try:
-            r = requests.get(url + '/app/subjects/', timeout=3)
-            Menu.subjects = r.json()
+        Builder.load_file('index.kv')
+        #Builder.load_file('screens/questions/questions.kv')
+        #Builder.load_file('screens/detail/detail.kv')
 
-            Builder.load_file('index.kv')
-            self.theme_cls.theme_style = "Light"
-            self.theme_cls.primary_palette = 'BlueGray'  #"Gray"
-            self.theme_cls.primary_hue = "300"
-            #self.window_manager = WindoManager(transition=FadeTransition(duration=1))
-            self.window_manager = WindoManager()
-            return self.window_manager
-
-        except requests.exceptions.HTTPError as errh:
-            print ("Http Error:",errh)
-            return MDLabel(text='Connection error!', halign='center')
-        except requests.exceptions.ConnectionError as errc:
-            return MDLabel(text='Connection error!', halign='center')
-        except requests.exceptions.Timeout as errt:
-            print ("Timeout Error:",errt)
-            return MDLabel(text='Connection error!', halign='center')
-        except requests.exceptions.RequestException as err:
-            print ("OOps: Something Else",err)
-            return MDLabel(text='Connection error!', halign='center')
+        #self.sm = sm
+        self.sm = ScreenManager()
+        self.sm.add_widget(Menu(name='menu'))
+        #self.sm.add_widget(Question(name='questions'))
+        #self.sm.add_widget(Detail(name='detail'))
+        return self.sm
 
     def build_config(self, config):
         self.config.setdefaults(
@@ -251,4 +196,5 @@ class App(MDApp):
         )
 
 if __name__ == '__main__':
+    
     App().run()

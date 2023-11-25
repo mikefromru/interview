@@ -1,0 +1,80 @@
+#<ListItem>
+#font_name: 'fonts/roboto-mono/logo_font.ttf'
+#    font_style: 'Subtitle2'
+<ListItem>
+    orientation: 'vertical'
+    size_hint: 1, None
+    height: '60dp'
+#md_bg_color: app.theme_cls.primary_light
+#md_bg_color: rgba('#ffffff')
+    line_color: rgba('#808080')
+#line_width: 7
+    radius: ['10dp',]
+    MDBoxLayout:
+        padding: '10dp'
+#MDLabel:
+#            size_hint_x: 0.1
+#            text: str(root.fuck)[:-2]
+#            font_name: 'fonts/roboto-mono/roboto-mono-bold.ttf'
+#            bold: True
+#            font_size: '14sp'
+
+#theme_text_color: 'Custom'
+#            text_color: app.theme_cls.primary_light
+        MDLabel:
+            text: root.text
+            font_name: 'fonts//roboto-mono/roboto-mono-bold.ttf'
+            font_size: '14sp'
+            bold: True
+            markup: True
+
+
+<Question>
+    MDBoxLayout:
+        orientation: 'vertical'
+#MDToolbar:
+        MDTopAppBar:
+#elevation: 0
+            md_bg_color: rgba('#ffffff')
+            id: mytitle
+            pos_hint: {'top': 1}
+            left_action_items:[['chevron-left', lambda x: root.callback()]]
+
+        ScrollView:
+            effect_cls: 'ScrollEffect'
+            do_scroll_x: False
+            do_scroll_y: True
+            id: myscroll
+            MDBoxLayout:
+                padding: '15dp'
+                spacing: '15dp'
+                size_hint_y: None
+                height: self.minimum_height
+
+                orientation: 'vertical'
+                id: box
+
+        MDFloatLayout:
+            size_hint_y: None
+            height: '50dp'
+            orientation: 'horizontal'
+            md_bg_color: rgba('#ffffff')
+            MDIconButton:
+#elevation: 0
+                icon: 'chevron-left'
+                ripple_scale: 0
+                on_release: root.prev()
+                pos_hint: {'center_x': .3, 'center_y': .5}
+                user_font_size: '28sp'
+            MDLabel:
+                text: str(root.page_id) + '/' + str(root.total)
+                bold: True
+                halign: 'center'
+                pos_hint: {'center_x': .5}
+
+            MDIconButton:
+                icon: 'chevron-right'
+                ripple_scale: 0
+                on_release: root.next()
+                user_font_size: '31sp'
+                pos_hint: {'center_x': .7, 'center_y': .5}

@@ -1,110 +1,39 @@
-<WindoManager>:
-    Menu:
-        id: menu
-        name: 'menu'
-    Question:
-        id: list_questions
-        name: 'list_questions'
-    Detail:
-        id: detail
-        name: 'detail'
-    NotConnection:
-        id: notconnection
-        name: 'notconnection'
-
-<NotConnection>
-    MDLabel:
-        text: 'Non connection'
-        halign: 'center'
-
-<Detail>
-    MDBoxLayout:
-        orientation: 'vertical'
-        MDToolbar:
-            id: title
-            title: root.title
-            left_action_items:[['arrow-left', lambda x: root.go_back()]]
-        
-        MDBoxLayout:
-            padding: (dp(10),dp(10), dp(10), dp(5))
-            ScrollView:
-                effect_cls: 'ScrollEffect'
-                do_scroll_x: False
-                do_scroll_y: True
-                MDLabel:
-#id: body
-                    text: root.body
-                    size_hint: 1, None
-                    size: self.texture_size
-                    markup: True
-                    halign: 'left'
-
-<ListItem>
-#font_name: 'fonts/roboto-mono/logo_font.ttf'
-    font_style: 'Subtitle2'
-
 <MD3Card>
     padding: 4
     size_hint: None, None
     size: "150dp", "70dp"
-    md_bg_color: app.theme_cls.primary_light
+#md_bg_color: app.theme_cls.primary_light
     on_release: root.get_questions()
-
+    radius: '10dp'
+    line_color: rgba('#808080')
+    line_height: 20
     MDRelativeLayout:
 
+#AsyncImage:
         FitImage:
             source: root.image
             size_hint: None, None
             size: "50dp", "50dp"
             pos_hint: {'center_x': .5, 'center_y': .5}
-<Question>
-    MDBoxLayout:
-        orientation: 'vertical'
-        MDToolbar:
-            id: mytitle
-            pos_hint: {'top': 1}
-            left_action_items:[['arrow-left', lambda x: root.callback()]]
 
-        ScrollView:
-            effect_cls: 'ScrollEffect'
-            do_scroll_x: False
-            do_scroll_y: True
-
-            id: myscroll
-            MDList:
-                id: box
-
-        MDFloatLayout:
-            size_hint_y: None
-            height: '50dp'
-            orientation: 'horizontal'
-            md_bg_color: rgba('#ffffff')
-            MDIconButton:
-                icon: 'chevron-left'
-                on_release: root.prev()
-                pos_hint: {'center_x': .3, 'center_y': .5}
-                user_font_size: '28sp'
-            MDLabel:
-                text: str(root.page_id) + '/' + str(root.total)
-                bold: True
-                halign: 'center'
-                pos_hint: {'center_x': .5}
-
-            MDIconButton:
-                icon: 'chevron-right'
-                on_release: root.next()
-                user_font_size: '31sp'
-                pos_hint: {'center_x': .7, 'center_y': .5}
 <Menu>
-    MDToolbar:
+#    MDToolbar:
+    MDTopAppBar:
+        left_action_items: [["web", lambda x: app.callback(x)]]
+#elevation: 0
+        md_bg_color: rgba('#ffffff')
         title: '[i]Interview +[/i]'
         pos_hint: {'top': 1}
+
     MDGridLayout:
         cols: 2
         adaptive_size: True
         id: box
         spacing: '16sp'
         pos_hint: {'center_x': .5, 'center_y': .5}
+
     MDFlatButton:
         id: lang
+        font_size: dp(18)
         on_release: root.switch_lang(self.text)
+

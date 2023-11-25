@@ -1,0 +1,43 @@
+<Question>
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDToolbar:
+            md_bg_color: rgba('#ffffff')
+            id: mytitle
+            pos_hint: {'top': 1}
+            left_action_items:[['chevron-left', lambda x: root.callback()]]
+
+        ScrollView:
+            effect_cls: 'ScrollEffect'
+            do_scroll_x: False
+            do_scroll_y: True
+            id: myscroll
+            MDBoxLayout:
+                spacing: '15dp'
+                padding: '15dp'
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                id: box
+
+        MDFloatLayout:
+            size_hint_y: None
+            height: '50dp'
+            orientation: 'horizontal'
+            md_bg_color: rgba('#ffffff')
+            MDIconButton:
+                icon: 'chevron-left'
+                on_release: root.prev()
+                pos_hint: {'center_x': .3, 'center_y': .5}
+                user_font_size: '28sp'
+            MDLabel:
+                text: str(root.page_id) + '/' + str(root.total)
+                bold: True
+                halign: 'center'
+                pos_hint: {'center_x': .5}
+
+            MDIconButton:
+                icon: 'chevron-right'
+                on_release: root.next()
+                user_font_size: '31sp'
+                pos_hint: {'center_x': .7, 'center_y': .5}

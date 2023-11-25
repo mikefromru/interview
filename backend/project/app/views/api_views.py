@@ -17,10 +17,10 @@ class SubjectView(APIView):
 
     def get(self, request, format=None):
         subjects = Subject.objects.all()
+        print(subjects)
         serializer = SubjectSerializer(subjects, many=True)
 
         return Response(serializer.data)
-
 
 class SubjectQuestionList(APIView, PageNumberPagination):
 
