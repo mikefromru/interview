@@ -1,7 +1,9 @@
 from django.urls import path
-from .. views import views
+from .. views import myadmin_views
 
 urlpatterns = [
-    path('', views.SubjectListView.as_view(), name='list-subjects'),
+    # Myadmin
+    path('', myadmin_views.SubjectListView.as_view(), name='list-subjects'),
+    path('detail/<int:id>/', myadmin_views.SubjectDetailView.as_view(), name='detail-subjects'),
 ]
 
