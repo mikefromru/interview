@@ -3,7 +3,21 @@
 
 <h1>Subjects</h1>
 {% for subject in object_list %}
-    <li><a href="{% url  'detail-subjects' subject.id %}">{{ subject.name }}</a></li>
+    <li><span onclick="get_level_questions( {{ subject.id }} )">{{ subject.name }}</span></li>
 {% endfor %}
+
+
+<script>
+
+    if (localStorage.getItem('lang') === null) {
+        localStorage.setItem('lang', 'en_lang');
+    }
+
+    function get_level_questions(id) {
+        var lang = localStorage.getItem('lang')
+        location.href = '/myadmin/detail/' + id + '/' + lang
+    }
+
+</script>
 
 {% endblock %}

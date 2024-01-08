@@ -3,7 +3,12 @@
 
 <H1>Questions</H1>
 {% for x in object %}
-    <li>{{ x.en_lang }}</li>
+    {% if x.ru_lang %}
+        <li>{{ x.ru_lang }}</li>
+    {% else %}
+        <li>{{ x.en_lang }}</li>
+    {% endif %}
+
 {% endfor %}
 
 {% endblock %}
