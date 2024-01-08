@@ -1,9 +1,19 @@
 {% extends 'myadmin/myadmin_base.html' %}
 {% block content %}
 
-<h1>Subjects</h1>
+
 {% for subject in object_list %}
-    <li><span onclick="get_level_questions( {{ subject.id }} )">{{ subject.name }}</span></li>
+    <div class="card">
+        <div class="card-header">
+            <p class="card-header-title" onclick="get_level_questions( {{ subject.id }} )">{{ subject.name|upper }}</p>
+            <footer class="card-footer">
+                <a href="#" class="card-footer-item">Save</a>
+                <a href="#" class="card-footer-item">Edit</a>
+                <a href="#" class="card-footer-item">Delete</a>
+            </footer>
+        </div>
+    </div>
+    <br>
 {% endfor %}
 
 
