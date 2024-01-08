@@ -29,7 +29,8 @@ class SubjectDetailView(SuperuserRequiredMixin, View):
     template_name = 'myadmin/subject_detail_list.html'
 
     def get(self, request, id):
-        queryset = Question.objects.filter(name__id=id).all()
+        queryset = Question.objects.filter(name__id=id).all().values('ru_lang')
+        print(queryset[:3], ' <<<<<<<<<<<<<<<<<<<<')
         return render(request, self.template_name, {'object': queryset})
 
 
