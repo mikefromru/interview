@@ -55,6 +55,9 @@ class SubjectDeleteView(SuperuserRequiredMixin, DeleteView):
 
 class SubjectUpdateView(SuperuserRequiredMixin, UpdateView):
     model = Subject
+    fields = ['name', 'image']
+    success_url = '/myadmin'
+    template_name = 'myadmin/subject-update.html'
 
 
 class SubjectCreateView(SuperuserRequiredMixin, CreateView):

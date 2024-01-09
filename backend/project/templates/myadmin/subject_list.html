@@ -16,7 +16,7 @@
                 <div class="card-header">
                     <p class="card-header-title" onclick="get_level_questions( {{ subject.id }} )">{{ subject.name|upper}}</p>
                     <footer class="card-footer">
-                        <a href="#" class="card-footer-item">Edit</a>
+                        <a href="{% url 'update-subject' subject.id %}" class="card-footer-item">Edit</a>
                         <a href="{% url 'delete-subject' subject.id %}" class="card-footer-item is-danger is-light">Delete</a>
                     </footer>
                 </div>
