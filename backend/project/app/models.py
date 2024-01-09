@@ -7,7 +7,7 @@ def upload_path(instance, name):
 class Subject(models.Model):
 
     name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to=upload_path, blank=True, null=True)
+    image = models.ImageField(upload_to=upload_path)
 
     def __str__(self):
         return self.name

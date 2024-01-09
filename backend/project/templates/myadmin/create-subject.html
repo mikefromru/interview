@@ -1,0 +1,15 @@
+{% extends 'myadmin/myadmin_base.html' %}
+{% block content %}
+
+<H1>Add level</H1>
+
+<form action="." method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+    
+    <!-- <input class="input" type="text" placeholder="Text input"> -->
+    {{ form.as_p }}
+    <button class="button is-success" type="submit">SUBMIT</button>
+    </form>
+
+{% endblock %}
