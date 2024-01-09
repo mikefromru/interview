@@ -1,33 +1,35 @@
 {% extends 'myadmin/myadmin_base.html' %}
 {% block content %}
 
-
 <div class="is-vcentered">
 
-<div class="columns is-multiline is-mobile">
+    <div class="columns is-multiline is-mobile">
 
-{% for subject in object_list %}
-<div class="column is-4">
-    <div class="card">
-        <div class="card-image">
-            <figure class="image is-48x48">
-                <img src="{{ MEDIA_URL}}{{ subject.image.url }}" alt="Placeholder image">
-            </figure>
+        {% for subject in object_list %}
+        <div class="column is-4">
+            <div class="card">
+                <div class="card-image">
+                    <figure class="image is-48x48">
+                        <img src="{{ MEDIA_URL}}{{ subject.image.url }}" alt="Placeholder image">
+                    </figure>
+                </div>
+                <div class="card-header">
+                    <p class="card-header-title" onclick="get_level_questions( {{ subject.id }} )">{{ subject.name|upper}}</p>
+                    <footer class="card-footer">
+                        <a href="#" class="card-footer-item">Edit</a>
+                        <a href="{% url 'delete-subject' subject.id %}" class="card-footer-item is-danger is-light">Delete</a>
+                    </footer>
+                </div>
+            </div>
         </div>
-        <div class="card-header">
-            <p class="card-header-title" onclick="get_level_questions( {{ subject.id }} )">{{ subject.name|upper }}</p>
-            <footer class="card-footer">
-                <a href="#" class="card-footer-item">Edit</a>
-                <a href="#" class="card-footer-item is-danger is-light">Delete</a>
-                <!-- <a href="#" class="card-footer-item">Delete</a> -->
-            </footer>
-        </div>
+        {% endfor %}
+
     </div>
 </div>
-{% endfor %}
 
+<button class="modal-close is-large" aria-label="close"></button>
 </div>
-</div>
+
 
 <script>
 

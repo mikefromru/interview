@@ -49,6 +49,8 @@ class SubjectDetailView(SuperuserRequiredMixin, View):
 
 class SubjectDeleteView(SuperuserRequiredMixin, DeleteView):
     model = Subject
+    success_url = '/myadmin'
+    template_name = 'myadmin/subject-confirm-delete.html'
 
 
 class SubjectUpdateView(SuperuserRequiredMixin, UpdateView):
