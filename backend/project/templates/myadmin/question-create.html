@@ -1,0 +1,22 @@
+{% extends 'myadmin/myadmin_base.html' %}
+{% block content %}
+
+<p>Add Question!</p>
+
+{% load crispy_forms_tags %}
+
+<form action="." method="POST">{% csrf_token %}
+    {{ form.name }}<br><br>
+    {{ form.en_lang }}<br><br>
+    {{ form.ru_lang }}<br><br>
+    {{ form.en_answer }}<br>
+    {{ form.ru_answer }}<br>
+
+    <button class="button is-success is-large is-fullwidth">Submit</button><br>
+    <a href="{% url 'list-subjects' %}" type="button" class="button is-primary is-large is-fullwidth is-outlined">Cancel</a><br>
+    
+</form>
+
+
+{% endblock %}
+

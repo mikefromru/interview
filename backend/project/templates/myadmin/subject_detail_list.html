@@ -1,12 +1,15 @@
 {% extends 'myadmin/myadmin_base.html' %}
 {% block content %}
 
-<h1>questions</h1>
+<h1>questions</h1><br>
+
 {% for x in object %}
     {% if x.ru_lang %}
-        <li>{{ x.ru_lang }}</li>
+        <li><a href="{% url 'question-delete' x.id %}">{{ x.ru_lang }}</a></li>
     {% else %}
-        <li>{{ x.en_lang }}</li>
+        <div class="mb-3">
+            <span class=""><b>{{ forloop.counter }}.</b> {{ x.en_lang }}</span><a class="button is-small is-outlined is-primary ml-5" href="{% url 'question-update' x.id %}">Edit</a><a class="button is-outlined is-small is-danger ml-5" href="{% url 'question-delete' x.id %}">Delete</a><br>
+        </div>
     {% endif %}
 
 {% endfor %}

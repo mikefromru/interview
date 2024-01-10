@@ -14,7 +14,7 @@ from app.models import Subject, Question
 
 from django.contrib.auth.mixins import UserPassesTestMixin
 
-from ..forms import SubjectCreateForm
+from ..forms import SubjectCreateForm, QuestionCreateForm
 
 
 class SuperuserRequiredMixin(UserPassesTestMixin):
@@ -28,23 +28,11 @@ class SubjectListView(SuperuserRequiredMixin, ListView):
 
 
 class SubjectDetailView(SuperuserRequiredMixin, View):
-
     template_name = 'myadmin/subject_detail_list.html'
 
     def get(self, request, id, lang='en_lang'):
-        print(lang, ' <<<<<<')
         queryset = Question.objects.filter(name__id=id).all().values('id', lang)
-        print(queryset[:3], ' <<<<<<<<<<<<<<<<<<<<')
         return render(request, self.template_name, {'object': queryset})
-
-
-# class NewSubject(SuperuserRequiredMixin, View):
-
-#     template_name = 'myadmin/subject_detail_list.html'
-
-#     def get(self, reuest):
-#         return HttpResponse('This is GET method')
-    
 
 
 class SubjectDeleteView(SuperuserRequiredMixin, DeleteView):
@@ -61,7 +49,6 @@ class SubjectUpdateView(SuperuserRequiredMixin, UpdateView):
 
 
 class SubjectCreateView(SuperuserRequiredMixin, CreateView):
-    # model = Subject
     template_name = 'myadmin/create-subject.html'
 
     def get(self, request, *args, **kwargs):
@@ -73,6 +60,41 @@ class SubjectCreateView(SuperuserRequiredMixin, CreateView):
         if form.is_valid():
             subject = form.save()
             subject.save()
-            # return HttpResponseRedirect(reverse_lazy('books:detail', args=[book.id]))
             return redirect('/myadmin')
         return render(request, self.template_name, {'form': form})
+
+
+# ## Question ##
+class QuestionCreateView(SuperuserRequiredMixin, View):
+
+    template_name = 'myadmin/question-create.html'
+
+    def get(self, request):
+
+        context = {'form': QuestionCreateForm()}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = QuestionCreateForm(request.POST)
+        if form.is_valid():
+            question = form.save()
+            question.save()
+            return redirect('/myadmin/question-create')
+        return render(request, self.template_name, {'form': form})
+
+
+class QuestionDeleteView(SuperuserRequiredMixin, DeleteView):
+    model = Question
+    success_url = '/myadmin'
+    template_name = 'myadmin/question-confirm-delete.html'
+
+
+
+class QuestionUpdateView(SuperuserRequiredMixin, UpdateView):
+    model = Question
+    fields = '__all__'
+    form_class = QuestionCreateForm()
+    success_url = '/myadmin'
+    # template_name = 'myadmin/question-update.html'
+    template_name = 'myadmin/question-create.html'
+

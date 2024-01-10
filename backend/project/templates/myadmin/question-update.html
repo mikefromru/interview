@@ -1,0 +1,12 @@
+{% extends 'myadmin/myadmin_base.html' %}
+{% block content %}
+
+<p>Update question</p>
+
+<form action="" method="POST">{% csrf_token %}
+    {{ form.as_p }}
+</form>
+
+{% endblock %}
+
+
